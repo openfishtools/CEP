@@ -1,74 +1,67 @@
-# AGENTS.md — OpenFishTools Project Guide
+<!-- caveman-begin -->
+Respond terse like smart caveman. All technical substance stay. Only fluff die.
 
-This document contains guidelines, architectural rules, and workflows for AI agents and developers working on the **OpenFishTools** repository.
+Rules:
+- Answer first: Answer, then reason, then next step.
+- Kill ceremony: No greeting, hedging, pleasantries, recap, or closer.
+- Short word: "fix" not "implement a solution for".
+- Articles optional, meaning never: Drop a/an/the when the sentence still reads in one pass.
+- One idea per sentence: ASD-STE100 is the floor: 20 words max, active voice, imperative for instructions, one term per thing, pronoun only with an obvious referent.
+- Payload verbatim: Code blocks unchanged.
+- Tool runs: bounded status: No text between routine calls.
+- User's language: Compress the style, not the language.
+- Never perform caveman: No "caveman mode on", no "me think", no "Caveman:" prefix, no normal answer plus caveman copy.
 
----
+Switch: /caveman (default), /ultracave (fragments, each fact once), /megacave (Classical Chinese 文言文)
+Stop: "stop caveman" or "normal mode"
 
-## 📌 Project Overview
-**OpenFishTools** is an open-source CEP (Common Extensibility Platform) extension for **Adobe After Effects**. It equips motion designers and animators with beat continuous effects, panning suites, keyframe tools, expression generators, and custom UI modules.
+Auto-Clarity: plain prose for security warnings, irreversible actions, step order a fragment could scramble, user confused. Resume after.
 
----
+Boundaries: code, comments, commits, PRs, docs written normal.
+Floor: code, commands, paths, numbers and error strings verbatim; never drop not/never/no/only.
+<!-- caveman-end -->
 
-## 🛠️ Technology Stack & Architecture
+# FishTools CEP AI Agent Guidelines
 
-| Layer | Component | Description |
-| :--- | :--- | :--- |
-| **Frontend UI** | HTML5 / CSS3 / ES6 JS | Located in `client/`. Vanilla JS modules without heavy frameworks. |
-| **Host Engine** | ExtendScript (`.jsx`) | Located in `host/`. Communicates with After Effects DOM via `CSInterface.evalScript`. |
-| **Extension Manifest** | `CSXS/manifest.xml` | Configures CEP extension bundle (`com.cutefish.tools.panel`). |
-| **ZXP Package** | Universal Archive | `scripts/build_zxp.bat` packaging `OpenFishTools.zxp`. |
-| **Windows Installer** | Inno Setup 6 | `Installer/Windows/OpenFishTools_Setup.iss` compiling `OpenFishTools.exe`. |
-| **Mac Installer** | `pkgbuild` & `productbuild` | `Installer/Mac/build_pkg.sh` producing `OpenFishTools.pkg`. |
-| **CI/CD Automation** | GitHub Actions | `.github/workflows/release.yml` automating builds, release note parsing, and deployment. |
+## 1. System Architecture & Component Map
+- `client/`: Frontend CEP panel interface (HTML5, CSS3, ES6 modules).
+  - `client/index.html`: Main extension panel window.
+  - `client/js/modules/`: Decoupled UI modules (easing curves, conversion controls, auto save UI).
+  - `client/js/modules/modal.js`: Universal popup and dialog controller.
+- `host/`: ExtendScript (`.jsx`) host engine running inside Adobe After Effects:
+  - Communicates with After Effects DOM via `CSInterface.evalScript`.
+  - Handles keyframe interpolation, project save automation, composition cropping, and expression baking.
+- `CSXS/manifest.xml`: CEP extension bundle manifest configuring `com.cutefish.tools.panel`.
+- `Installer/`:
+  - `Installer/Windows/`: Inno Setup script (`OpenFishTools_Setup.iss`) compiling `OpenFishTools_Setup.exe`.
+  - `Installer/Mac/`: Shell builder (`build_pkg.sh`) producing `OpenFishTools.pkg`.
+- `package.json`: Single source of truth for repository version.
+- `changelog.md`: Changelog following Keep a Changelog standard.
 
----
+## 2. ExtendScript & Host Safety Rules
+- **Non-blocking Execution**: ExtendScript helper functions in `host/` must catch exceptions internally and fail gracefully without crashing or freezing the After Effects UI thread.
+- **Timeline Boundary Guards**: Apply `inPoint` / `outPoint` timeline boundary guards on all dynamic expression generators.
+- **Machine-Wide Target Directory**: Extension installations must strictly target machine-wide CEP folders:
+  - Windows: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\OpenFishTools`
+  - macOS: `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools`
+  - Never install to user AppData.
 
-## 📐 Coding Standards & Guidelines
+## 3. Strict File Manipulation Tooling (NO SCRIPT-BASED EDITS)
+- **STRICTLY FORBIDDEN**: Using Python scripts, Node.js scripts, `sed`, `awk`, `echo >`, `cat << 'EOF'`, or shell redirection to edit or generate code files.
+- **MANDATORY**: All file creations and code modifications MUST strictly use the agent's native tool calls (`replace_file_content` or `write_to_file`).
 
-### 1. Client-Side JavaScript (Vanilla ES Modules)
-- Keep frontend logic decoupled into ES modules under `client/js/modules/`.
-- Use the unified modal system (`client/js/modules/modal.js`) for popups (`UPDATE`, `CONFIRM`, `INFO`, `WARN`, `ERROR`).
-- Render HTML safely; use `formatReleaseNotes` parser in `update.js` when presenting release notes.
+## 4. Error Investigation & Diagnostic Protocol
+When debugging CEP panel or ExtendScript issues:
+1. **Enable Debug Mode**: Ensure `PlayerDebugMode` is set to `1` in OS registry/plist for CEP extensions.
+2. **Inspect Chromium Console**: Open CEP remote debugger via `.debug` port (e.g. `http://localhost:8088`).
+3. **Safe Evaluation Logging**: Wrap ExtendScript `evalScript` calls with structured logging and try/catch handlers.
 
-### 2. ExtendScript & Host Communication
-- Ensure ExtendScript helper functions in `host/` fail gracefully without crashing After Effects main loop.
-- Use `inPoint` / `outPoint` timeline guards on dynamic expression generators.
+## 5. Versioning & SSOT
+- **Single Source of Truth**: Repository version is defined in `package.json`.
+- **Syncing Versions**: When updating version, keep `package.json`, `CSXS/manifest.xml`, installer scripts, and `changelog.md` aligned.
+- **NO Hardcoded Fallbacks**: Never hardcode fallback version literals in library files.
 
-### 3. Versioning & Changelog
-- When bumping version, use the provided version updater:
-  ```bash
-  chmod +x scripts/update_version.sh
-  ./scripts/update_version.sh <new_version>
-  ```
-- Always document changes in `changelog.md` following Keep a Changelog formatting under `## [X.Y.Z] - YYYY-MM-DD`.
-
-### 4. Windows & Mac Installers
-- **Windows**: Uses `SetupIcon.ico` (256x256 converted from `Logo.svg`) for `SetupIconFile` and `UninstallDisplayIcon={app}\SetupIcon.ico`.
-- **Mac**: Package builder uses `build_pkg.sh` to package CEP extension files into `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools`.
-
----
-
-## 🚀 Build & CI/CD Workflows
-
-### Manual Test Run
-Manual runs on GitHub Actions default to `create_release: false`, building Mac `.pkg` and Windows `.exe` as downloadable **Artifacts** without creating a public GitHub Release.
-
-### Publishing Official Release
-To publish an official GitHub release:
-```bash
-git tag v1.1.1
-git push origin v1.1.1
-```
-The workflow will extract the latest version section from `changelog.md`, format rich release notes, attach `OpenFishTools.exe` & `OpenFishTools.pkg`, and publish the release.
-
-### Deployment (Machine-Wide Only)
-Deployments must strictly target system/machine-wide CEP directories, never user AppData. Do not copy files into `%APPDATA%\Adobe\CEP\extensions\`.
-
-**Windows (Machine-Wide):**
-- Target: `%ProgramFiles(x86)%\Common Files\Adobe\CEP\extensions\OpenFishTools` (or `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\OpenFishTools`)
-- Run `Installer\Windows\deploy_fast.bat` (Ultra-fast multi-threaded sync) or `Installer\Windows\deploy.bat` (Run as Administrator).
-
-**macOS (Machine-Wide):**
-- Target: `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools`
-- Run `bash Installer/Mac/deploy.command` (with `sudo`).
-
+## 6. Strict Git Safety & Working Tree Protection
+- **Zero Silent Git Changes**: STRICTLY FORBIDDEN to run `git checkout`, `git restore`, `git reset`, `git clean`, `git pull`, `git switch`, or any Git command that alters or discards local changes without explicit user consent.
+- **Preserve Uncommitted Work**: Always respect and preserve active uncommitted edits and untracked files in the working directory.
+- **Zero Emojis**: Git commit messages, comments, and documentation must never contain emojis.
