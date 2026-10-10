@@ -95,6 +95,14 @@ Output binary: `Installer/Windows/OpenFishTools_Setup.exe`
 
 This project is licensed under the [MIT License](LICENSE).
 
+### Summary
+- **Do**:
+  - Use, copy, modify, and distribute freely in personal or commercial projects.
+  - Keep the original copyright and license notice when redistributing.
+- **Don't**:
+  - Hold the authors liable for any damages or issues arising from use.
+  - Remove original author attribution.
+
 ---
 
 ## Disclaimer
