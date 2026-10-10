@@ -7,6 +7,7 @@
   **After Effects extension panel for motion design, easing curves, and project utilities.**
 
   [![Version: 1.3.9](https://img.shields.io/badge/version-1.3.9-9DFF00.svg)](changelog.md)
+  [![Category: Extension](https://img.shields.io/badge/category-Extension-blue.svg)](#)
   [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
