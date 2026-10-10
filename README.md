@@ -1,9 +1,17 @@
-# FishTools (OpenFishTools CEP)
+<div align="center">
 
-[![Version: 1.3.9](https://img.shields.io/badge/version-1.3.9-9DFF00.svg)](changelog.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+  <img src="https://raw.githubusercontent.com/openfishtools/.github/main/profile/assets/projects/cep.svg" width="96" height="96" alt="FishTools" />
 
-FishTools is a CEP (Common Extensibility Platform) extension panel for Adobe After Effects designed to streamline motion design workflows, animation controls, and project management.
+  # FishTools
+
+  **After Effects extension panel for motion design, easing curves, and project utilities.**
+
+  [![Version: 1.3.9](https://img.shields.io/badge/version-1.3.9-9DFF00.svg)](changelog.md)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+</div>
+
+---
 
 Developed by **cutefishaep**.
 
