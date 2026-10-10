@@ -13,10 +13,6 @@
 
 ---
 
-Developed by **cutefishaep**.
-
----
-
 ## Features
 
 ### Graph Editor & Easing
