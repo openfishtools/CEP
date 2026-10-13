@@ -8,7 +8,7 @@
 
   [![Version: 1.3.10](https://img.shields.io/badge/version-1.3.10-9DFF00.svg)](changelog.md)
   [![Category: Extension](https://img.shields.io/badge/category-Extension-blue.svg)](#)
-  [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-orange.svg)](LICENSE)
+  [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](LICENSE)
 
 </div>
 
@@ -18,7 +18,7 @@
 
 <a name="bahasa-indonesia"></a>
 
-> **Pembaruan lisensi:** mulai dari **v1.3.10**, FishTools dilisensikan di bawah **[CC BY-NC-SA 4.0](LICENSE)**, bukan lagi MIT. **Dilarang memperjualbelikan** dan **menghapus kredit**. Versi sebelum v1.3.10 tetap MIT. Lihat [Lisensi](#lisensi).
+> **Pembaruan lisensi:** mulai dari **v1.3.10**, FishTools dilisensikan di bawah **[GNU AGPLv3](LICENSE)**, bukan lagi MIT. Perangkat lunak bebas & open source dengan perlindungan copyleft (siapapun yang memodifikasi dan mendistribusikan wajib membuka seluruh kode sumbernya). Versi sebelum v1.3.10 tetap MIT. Lihat [Lisensi](#lisensi).
 
 ## Fitur
 
@@ -103,22 +103,22 @@ Hasil build: `Installer/Windows/OpenFishTools_Setup.exe`
 ---
 
 ## Lisensi
-
-Proyek ini dilisensikan di bawah [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](LICENSE). Halaman resmi: <https://creativecommons.org/licenses/by-nc-sa/4.0/deed.id>.
+ 
+Proyek ini dilisensikan di bawah [GNU Affero General Public License v3 (AGPL-3.0)](LICENSE). Halaman resmi: <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 ### Ringkasan
 | B/T | Keterangan |
 |---|---|
-| Boleh | Memakai, memodifikasi, dan membagikan secara gratis untuk keperluan **non-komersial**. |
-| Boleh | Membuat versi modifikasi (fork) dan membagikannya. |
-| Boleh | Dengan syarat: mencantumkan kredit ke FishTools (OpenFishTools), menyertakan tautan lisensi, dan menyebutkan kalau ada perubahan. Jangan hapus kredit. |
-| Boleh | Dengan syarat: membagikan versi modifikasi dengan lisensi yang sama (CC BY-NC-SA 4.0 atau yang kompatibel). |
-| Tidak | **Menjual** perangkat lunak ini atau versi modifikasinya. |
-| Tidak | Menjadikannya produk, langganan, atau layanan berbayar, atau memakainya untuk keperluan komersial. Untuk itu, minta lisensi terpisah ke pembuat. |
-| Tidak | **Menghapus kredit** (atribusi). |
+| Boleh | Memakai, memodifikasi, dan membagikan secara bebas (termasuk untuk keperluan pribadi maupun komersial). |
+| Boleh | Membuat versi modifikasi (fork) dan mengintegrasikannya. |
+| Wajib | **Membuka Source Code (Copyleft):** Jika Anda memodifikasi atau mendistribusikan software ini, Anda **wajib** merilis seluruh kode sumber modifikasinya ke publik di bawah lisensi AGPLv3 juga. |
+| Wajib | Mencantumkan kredit dan pemberitahuan hak cipta asli ke FishTools (OpenFishTools). |
+| Wajib | Membagikan versi modifikasi dengan lisensi yang sama persis (AGPL-3.0). |
+| Tidak | Menutup source code (*closed source*) saat mendistribusikan atau menjalankannya ke pengguna lain. |
+| Tidak | Menghapus atribusi/kredit asli atau membatasi hak kebebasan pengguna lain. |
 | Tidak | Menuntut pembuat bertanggung jawab. Diberikan apa adanya, tanpa jaminan. |
 
-Teks yang mengikat hanya file [`LICENSE`](LICENSE); tabel ini hanya penjelasan. Creative Commons tidak merekomendasikan lisensinya untuk software.
+Teks yang mengikat secara hukum adalah file [`LICENSE`](LICENSE); ringkasan ini hanya sebagai bantuan penjelasan.
 
 ## Disclaimer
 
@@ -128,7 +128,7 @@ OpenFishTools adalah ekstensi independen. Adobe dan After Effects adalah merek d
 
 <a name="english"></a>
 
-> **License update:** starting from **v1.3.10**, FishTools is licensed under **[CC BY-NC-SA 4.0](LICENSE)** instead of MIT. Selling it and removing the credit are **not allowed**. Versions before v1.3.10 stay under MIT. See [License](#license).
+> **License update:** starting from **v1.3.10**, FishTools is licensed under **[GNU AGPLv3](LICENSE)** instead of MIT. Free and open-source software protected by copyleft (anyone who modifies and distributes it must release the complete source code). Versions before v1.3.10 stay under MIT. See [License](#license).
 
 ## Features
 
@@ -214,20 +214,21 @@ Output binary: `Installer/Windows/OpenFishTools_Setup.exe`
 
 ## License
 
-This project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](LICENSE). Official page: <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
+This project is licensed under the [GNU Affero General Public License v3 (AGPL-3.0)](LICENSE). Official page: <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 ### Summary
 | Y/N | Description |
 |---|---|
-| Yes | Use, modify and share for free for **noncommercial** purposes. |
-| Yes | Make modified versions (forks) and share them. |
-| Yes | On condition: give credit to FishTools (OpenFishTools), link to the license, and say if you made changes. Do not remove the credit. |
-| Yes | On condition: share your modified version under the same license (CC BY-NC-SA 4.0 or a compatible one). |
-| No | Sell the software or a modified version. |
-| No | Build a paid product, subscription or service on it, or use it for commercial purposes. For that, ask the authors for a separate license. |
+| Yes | Use, modify and share freely (including for personal and commercial purposes). |
+| Yes | Make modified versions (forks) and integrate them. |
+| Required | **Disclose Source Code (Copyleft):** If you modify or distribute this software, you **must** make the complete source code of your version available under the AGPLv3. |
+| Required | Keep the original copyright notices and credit to FishTools (OpenFishTools). |
+| Required | Share any modified versions under the same AGPL-3.0 license. |
+| No | Make the software closed-source when distributing it to other users. |
+| No | Remove original credits or restrict other users' freedoms. |
 | No | Hold the authors liable. It is provided as is, without warranty. |
 
-The binding text is the [`LICENSE`](LICENSE) file; this table is only an explanation. Creative Commons does not recommend its licenses for software.
+The legally binding text is the [`LICENSE`](LICENSE) file; this summary is for informational purposes only.
 
 ## Disclaimer
 
