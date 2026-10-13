@@ -2,6 +2,10 @@
 
 All notable changes to the **Fish Tools** Adobe After Effects extension will be documented in this file.
 
+## [1.3.10] - 2026-10-11
+### Changed
+- **License**: FishTools is now licensed under **CC BY-NC-SA 4.0** instead of MIT. You may use, modify and share it for noncommercial purposes with credit; selling it and removing the credit are not allowed, and modified versions must use the same license. Versions up to 1.3.9 stay under MIT. See `LICENSE` and the README.
+
 ## [1.3.9] - 2026-08-28
 ### Added
 - **Project Pool — Project Preset Packaging & Asset Relinking**:
