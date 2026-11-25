@@ -1,63 +1,37 @@
 #!/bin/bash
 # =============================================================================
-# OpenFishTools CEP Extension — Mac Postinstall Script
-# 1. Enables PlayerDebugMode for Adobe CEP CSXS 9–12 (CC 2018 – CC 2027)
-# 2. Sets correct permissions on the bundled uninstaller
+# OpenFishTools CEP Extension — Mac Postinstall Script (User-Domain)
+# 1. Enables PlayerDebugMode for Adobe CEP CSXS 7-16 in user preferences
+# 2. Sets executable permission on bundled uninstaller (no admin required)
 # =============================================================================
 
 EXTENSION_NAME="OpenFishTools"
-EXTENSION_INSTALL_DIR="/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
 
-# ─── CSXS Versions ────────────────────────────────────────────────────────────
-# CC 2017       → CSXS 7
-# CC 2018       → CSXS 8
-# CC 2019       → CSXS 9
-# CC 2020       → CSXS 10
-# CC 2021       → CSXS 11
-# CC 2022       → CSXS 11 / CSXS 12
-# CC 2023       → CSXS 12
-# CC 2024       → CSXS 12
-# CC 2025       → CSXS 12 / CSXS 13
-# CC 2026       → CSXS 14 / CSXS 15
-# CC 2027       → CSXS 16
+USER_HOME="${HOME:-}"
+if [ -z "$USER_HOME" ] || [ "$USER_HOME" = "/var/root" ]; then
+    REAL_USER=$(stat -f "%Su" /dev/console 2>/dev/null)
+    if [ -n "$REAL_USER" ] && [ "$REAL_USER" != "root" ]; then
+        USER_HOME=$(dscl . -read "/Users/$REAL_USER" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
+    fi
+fi
+
+EXTENSION_INSTALL_DIR="$USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
 CSXS_VERSIONS=(7 8 9 10 11 12 13 14 15 16)
 
-echo "==> OpenFishTools Postinstall: Enabling PlayerDebugMode..."
+echo "==> OpenFishTools Postinstall: Enabling per-user PlayerDebugMode..."
 
-# ─── Get the actual logged-in user (postinstall runs as root) ─────────────────
-REAL_USER=$(stat -f "%Su" /dev/console 2>/dev/null)
-if [ -z "$REAL_USER" ] || [ "$REAL_USER" = "root" ]; then
-    REAL_USER=$(ls -la /dev/console | awk '{print $3}')
-fi
-USER_HOME=$(dscl . -read "/Users/$REAL_USER" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
-
-echo "==> Detected user: $REAL_USER (home: $USER_HOME)"
-
-# ─── Set PlayerDebugMode — System-wide plist ──────────────────────────────────
-for v in "${CSXS_VERSIONS[@]}"; do
-    echo "==> Setting system PlayerDebugMode for CSXS $v"
-    defaults write "/Library/Preferences/com.adobe.CSXS.$v" PlayerDebugMode -string "1"
-done
-
-# ─── Set PlayerDebugMode — Per-user plist ────────────────────────────────────
-if [ -n "$USER_HOME" ] && [ "$REAL_USER" != "root" ]; then
+if [ -n "$USER_HOME" ]; then
     for v in "${CSXS_VERSIONS[@]}"; do
-        PLIST_PATH="$USER_HOME/Library/Preferences/com.adobe.CSXS.$v.plist"
         echo "==> Setting user PlayerDebugMode for CSXS $v"
-        sudo -u "$REAL_USER" defaults write "$USER_HOME/Library/Preferences/com.adobe.CSXS.$v" PlayerDebugMode -string "1"
-        chown "$REAL_USER" "$PLIST_PATH" 2>/dev/null || true
+        defaults write "$USER_HOME/Library/Preferences/com.adobe.CSXS.$v" PlayerDebugMode -string "1"
     done
 fi
 
-# ─── Set permissions on bundled uninstaller ──────────────────────────────────
 UNINSTALLER_PATH="$EXTENSION_INSTALL_DIR/Uninstall OpenFishTools.tool"
 if [ -f "$UNINSTALLER_PATH" ]; then
     chmod +x "$UNINSTALLER_PATH"
-    chown root:wheel "$UNINSTALLER_PATH"
     echo "==> Uninstaller permissions set: $UNINSTALLER_PATH"
 fi
 
-echo "==> Postinstall complete. OpenFishTools has been installed successfully."
-
+echo "==> Postinstall complete. OpenFishTools installed in user folder: $EXTENSION_INSTALL_DIR"
 exit 0
-

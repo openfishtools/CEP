@@ -1,34 +1,47 @@
 #!/bin/bash
 # =============================================================================
-# OpenFishTools CEP Extension — Mac Preinstall Script
-# Removes any existing installation before the new package is installed.
+# OpenFishTools CEP Extension — Mac Preinstall Script (User-Domain)
+# 1. Cleans existing user-level installation (no admin required)
+# 2. Checks for old system/admin installation and prompts user before removal
 # =============================================================================
 
 EXTENSION_NAME="OpenFishTools"
 SYSTEM_CEP_PATH="/Library/Application Support/Adobe/CEP/extensions"
+OLD_ADMIN_DIR="$SYSTEM_CEP_PATH/$EXTENSION_NAME"
 
-echo "==> OpenFishTools Preinstall: Cleaning up previous installation..."
-
-# Remove from system-wide CEP path
-if [ -d "$SYSTEM_CEP_PATH/$EXTENSION_NAME" ]; then
-    echo "==> Removing existing system installation at: $SYSTEM_CEP_PATH/$EXTENSION_NAME"
-    rm -rf "$SYSTEM_CEP_PATH/$EXTENSION_NAME"
-fi
-
-# Remove from detected active user's home directory only
-REAL_USER=$(stat -f "%Su" /dev/console 2>/dev/null)
-if [ -z "$REAL_USER" ] || [ "$REAL_USER" = "root" ]; then
-    REAL_USER=$(ls -la /dev/console | awk '{print $3}')
-fi
-
-if [ -n "$REAL_USER" ] && [ "$REAL_USER" != "root" ]; then
-    USER_HOME=$(dscl . -read "/Users/$REAL_USER" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
-    if [ -n "$USER_HOME" ] && [ -d "$USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME" ]; then
-        echo "==> Removing existing user installation at: $USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
-        rm -rf "$USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
+USER_HOME="${HOME:-}"
+if [ -z "$USER_HOME" ] || [ "$USER_HOME" = "/var/root" ]; then
+    REAL_USER=$(stat -f "%Su" /dev/console 2>/dev/null)
+    if [ -n "$REAL_USER" ] && [ "$REAL_USER" != "root" ]; then
+        USER_HOME=$(dscl . -read "/Users/$REAL_USER" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
     fi
 fi
 
-echo "==> Preinstall complete. Previous installation removed successfully."
-exit 0
+echo "==> OpenFishTools Preinstall: Checking existing installations..."
 
+# 1. Clean existing user-level installation (no admin privileges needed)
+if [ -n "$USER_HOME" ] && [ -d "$USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME" ]; then
+    echo "==> Removing existing user installation at: $USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
+    rm -rf "$USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
+fi
+
+# 2. Check for legacy installation in system/admin AE folder
+if [ -d "$OLD_ADMIN_DIR" ]; then
+    echo "==> Found existing installation in admin folder: $OLD_ADMIN_DIR"
+    CHOICE=$(osascript -e 'button returned of (display dialog "An old OpenFishTools installation was found in the After Effects admin/system folder:\n\n/Library/Application Support/Adobe/CEP/extensions/OpenFishTools\n\nOpenFishTools now installs into your user folder (no admin required, smoother updates).\n\nDo you want to delete the old installation from the admin folder? (Administrator permission will be requested)" buttons {"Keep", "Delete (Admin)"} default button "Delete (Admin)" with title "OpenFishTools Installer" with icon caution)' 2>/dev/null || echo "Keep")
+
+    if [ "$CHOICE" = "Delete (Admin)" ]; then
+        echo "==> Requesting admin privileges to delete: $OLD_ADMIN_DIR"
+        osascript -e 'do shell script "rm -rf \"/Library/Application Support/Adobe/CEP/extensions/OpenFishTools\"" with administrator privileges' 2>/dev/null || true
+        if [ -d "$OLD_ADMIN_DIR" ]; then
+            echo "==> Warning: Old admin folder could not be deleted (cancelled or failed)."
+        else
+            echo "==> Old admin folder removed successfully."
+        fi
+    else
+        echo "==> User chose to keep old admin installation."
+    fi
+fi
+
+echo "==> Preinstall complete."
+exit 0

@@ -57,9 +57,9 @@ Unduh rilis terbaru dari halaman [GitHub Releases](https://github.com/openfishto
 
 ### Metode 2: Instalasi Manual
 1. Unduh atau clone repositori ini.
-2. Pindahkan direktori `OpenFishTools` ke folder ekstensi CEP di sistemmu:
-   - **macOS**: `/Library/Application Support/Adobe/CEP/extensions/`
-   - **Windows**: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`
+2. Pindahkan direktori `OpenFishTools` ke folder ekstensi CEP pengguna (tanpa admin):
+   - **macOS**: `~/Library/Application Support/Adobe/CEP/extensions/`
+   - **Windows**: `%APPDATA%\Adobe\CEP\extensions\`
 3. Aktifkan `PlayerDebugMode` untuk ekstensi yang tidak ditandatangani:
    - **macOS**: `defaults write com.adobe.CSXS.12 PlayerDebugMode 1`
    - **Windows Registry**: `HKCU\Software\Adobe\CSXS.12` -> `PlayerDebugMode = "1"` (string).
@@ -167,9 +167,9 @@ Download the latest release from the [GitHub Releases](https://github.com/openfi
 
 ### Method 2: Manual Installation
 1. Download or clone this repository.
-2. Move the `OpenFishTools` directory into your system's CEP extensions folder:
-   - **macOS**: `/Library/Application Support/Adobe/CEP/extensions/`
-   - **Windows**: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\`
+2. Move the `OpenFishTools` directory into your user's CEP extensions folder (no admin required):
+   - **macOS**: `~/Library/Application Support/Adobe/CEP/extensions/`
+   - **Windows**: `%APPDATA%\Adobe\CEP\extensions\`
 3. Enable `PlayerDebugMode` for unsigned extensions:
    - **macOS**: `defaults write com.adobe.CSXS.12 PlayerDebugMode 1`
    - **Windows Registry**: `HKCU\Software\Adobe\CSXS.12` -> `PlayerDebugMode = "1"` (string).

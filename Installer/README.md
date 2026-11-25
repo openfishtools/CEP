@@ -50,14 +50,14 @@ security find-identity -v -p basic | grep "Developer ID Installer"
 ```
 
 ### What the Installer Does
-1. **preinstall**: Removes any existing `OpenFishTools` from system/user CEP paths
-2. Copies extension to `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools/`
+1. **preinstall**: Removes any existing `OpenFishTools` from user CEP path (`~/Library/Application Support/Adobe/CEP/extensions/`), and if an older system/admin installation exists at `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools`, prompts whether to delete it (requesting admin permission only if confirmed)
+2. Copies extension to `~/Library/Application Support/Adobe/CEP/extensions/OpenFishTools/` (no admin required)
 3. **postinstall**: 
-   - Enables `PlayerDebugMode=1` for **CSXS 9–12** (CC 2018–CC 2027) system-wide and per-user
-   - Creates `Uninstall OpenFishTools.tool` inside the extension folder
+   - Enables `PlayerDebugMode=1` for **CSXS 7–16** (CC 2017–CC 2027+) per-user
+   - Sets executable permission on `Uninstall OpenFishTools.tool` inside the extension folder
 
 ### Uninstalling on Mac
-Open Finder → `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools/` → double-click **Uninstall OpenFishTools.tool**
+Open Finder → `~/Library/Application Support/Adobe/CEP/extensions/OpenFishTools/` → double-click **Uninstall OpenFishTools.tool**
 
 ---
 
@@ -73,12 +73,10 @@ Open Finder → `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools
 4. Output: `Installer/Windows/OpenFishTools_v1.0.7_Setup.exe`
 
 ### What the Installer Does
-- Copies extension files to `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\OpenFishTools\`
-- Sets `PlayerDebugMode=1` in the registry for **CSXS 9–12** (CC 2018–CC 2027):
-  - `HKCU\Software\Adobe\CSXS.9` through `CSXS.12`
-  - `HKLM\Software\Adobe\CSXS.9` through `CSXS.12`
-  - Also sets `Wow6432Node` paths for 32-bit compatibility
-- Built-in uninstaller (Add/Remove Programs)
+- Checks for an existing old installation in `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\OpenFishTools\`; if found, asks whether to remove it (requesting UAC admin permission only if confirmed)
+- Copies extension files to `%APPDATA%\Adobe\CEP\extensions\OpenFishTools\` (no admin required)
+- Sets `PlayerDebugMode=1` in the user registry (`HKCU`) for **CSXS 7–16** (CC 2017–CC 2027+), including `Wow6432Node`
+- Built-in per-user uninstaller (Add/Remove Programs)
 
 ### Anti-virus
 The installer contains **only script files and web assets** — no compiled executables. Inno Setup is widely recognized and trusted by AV engines.

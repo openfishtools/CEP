@@ -1,9 +1,27 @@
 #!/bin/bash
 
-TARGET_DIR="/Library/Application Support/Adobe/CEP/extensions/OpenFishTools"
+EXTENSION_NAME="OpenFishTools"
+SYSTEM_TARGET="/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
 
-if [ -d "$TARGET_DIR" ]; then
-    rm -rf "$TARGET_DIR"
+USER_HOME="${HOME:-}"
+if [ -z "$USER_HOME" ] || [ "$USER_HOME" = "/var/root" ]; then
+    REAL_USER=$(stat -f "%Su" /dev/console 2>/dev/null)
+    if [ -n "$REAL_USER" ] && [ "$REAL_USER" != "root" ]; then
+        USER_HOME=$(dscl . -read "/Users/$REAL_USER" NFSHomeDirectory 2>/dev/null | awk '{print $2}')
+    fi
+fi
+
+USER_TARGET="$USER_HOME/Library/Application Support/Adobe/CEP/extensions/$EXTENSION_NAME"
+
+if [ -d "$USER_TARGET" ]; then
+    rm -rf "$USER_TARGET"
+fi
+
+if [ -d "$SYSTEM_TARGET" ]; then
+    CHOICE=$(osascript -e 'button returned of (display dialog "An OpenFishTools installation was also found in the admin/system folder:\n\n/Library/Application Support/Adobe/CEP/extensions/OpenFishTools\n\nDo you want to remove it? (Administrator permission will be requested)" buttons {"Keep", "Delete (Admin)"} default button "Delete (Admin)" with title "OpenFishTools Uninstaller" with icon caution)' 2>/dev/null || echo "Keep")
+    if [ "$CHOICE" = "Delete (Admin)" ]; then
+        osascript -e 'do shell script "rm -rf \"/Library/Application Support/Adobe/CEP/extensions/OpenFishTools\"" with administrator privileges' 2>/dev/null || true
+    fi
 fi
 
 exit 0

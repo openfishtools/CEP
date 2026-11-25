@@ -1,4 +1,4 @@
-﻿﻿#!/bin/bash
+﻿#!/bin/bash
 set -e
 
 APP_NAME="OpenFishTools"
@@ -14,7 +14,6 @@ if [ -f "$PROJECT_ROOT/scripts/update_version.sh" ]; then
 fi
 
 PAYLOAD_DIR="$SCRIPT_DIR/payload"
-EMPTY_PAYLOAD_DIR="$SCRIPT_DIR/empty_payload"
 SCRIPTS_DIR="$SCRIPT_DIR/scripts"
 UNINSTALL_SCRIPTS_DIR="$SCRIPT_DIR/scripts_uninstall"
 RESOURCES_DIR="$SCRIPT_DIR/resources"
@@ -23,7 +22,8 @@ OUTPUT_PKG="$SCRIPT_DIR/${APP_NAME}.pkg"
 COMPONENT_PKG="$BUILD_DIR/${APP_NAME}_component.pkg"
 UNINSTALL_COMPONENT_PKG="$BUILD_DIR/${APP_NAME}_uninstall_component.pkg"
 
-INSTALL_LOCATION="/Library/Application Support/Adobe/CEP/extensions"
+# Relative path for user-home domain installation (~/Library/Application Support/Adobe/CEP/extensions)
+INSTALL_LOCATION="Library/Application Support/Adobe/CEP/extensions"
 
 SIGNING_IDENTITY="${SIGNING_IDENTITY:-}"
 
@@ -46,9 +46,8 @@ echo "OpenFishTools - Mac Package Builder v$APP_VERSION"
 
 section "Step 1: Preparing payloads"
 
-rm -rf "$PAYLOAD_DIR" "$EMPTY_PAYLOAD_DIR"
+rm -rf "$PAYLOAD_DIR"
 mkdir -p "$PAYLOAD_DIR/$EXTENSION_FOLDER_NAME"
-mkdir -p "$EMPTY_PAYLOAD_DIR"
 
 info "Copying extension files..."
 rsync -av \
@@ -89,11 +88,10 @@ pkgbuild \
     "$COMPONENT_PKG"
 
 pkgbuild \
-    --root "$EMPTY_PAYLOAD_DIR" \
+    --nopayload \
     --scripts "$UNINSTALL_SCRIPTS_DIR" \
     --identifier "${BUNDLE_ID}.uninstall.pkg" \
     --version "$APP_VERSION" \
-    --install-location "/tmp" \
     "$UNINSTALL_COMPONENT_PKG"
 
 info "Component packages built."
@@ -127,7 +125,7 @@ info "Distribution package built: $OUTPUT_PKG"
 
 section "Step 5: Cleaning up"
 
-rm -rf "$PAYLOAD_DIR" "$EMPTY_PAYLOAD_DIR" "$BUILD_DIR"
+rm -rf "$PAYLOAD_DIR" "$BUILD_DIR"
 info "Cleanup complete."
 
 echo ""

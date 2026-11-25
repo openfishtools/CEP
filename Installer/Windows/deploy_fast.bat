@@ -2,22 +2,11 @@
 setlocal
 title OpenFishTools - Fast Deploy
 
-:: Check Administrator permissions
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-    echo Requesting Administrator privileges...
-    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin_oft_fast.vbs"
-    echo UAC.ShellExecute "cmd.exe", "/c """"%~f0"""" admin_run", "", "runas", 1 >> "%temp%\getadmin_oft_fast.vbs"
-    "%temp%\getadmin_oft_fast.vbs"
-    del "%temp%\getadmin_oft_fast.vbs" 2>nul
-    exit /b
-)
-
-:admin_run
 set "SOURCE=%~dp0..\.."
 for %%I in ("%SOURCE%") do set "SOURCE=%%~fI"
 
-set "TARGET=%ProgramFiles(x86)%\Common Files\Adobe\CEP\extensions\OpenFishTools"
+set "TARGET=%APPDATA%\Adobe\CEP\extensions\OpenFishTools"
+set "OLD_ADMIN_DIR=%ProgramFiles(x86)%\Common Files\Adobe\CEP\extensions\OpenFishTools"
 
 echo ========================================
 echo   OpenFishTools - Ultra Fast Deploy
@@ -26,12 +15,25 @@ echo Source: %SOURCE%
 echo Target: %TARGET%
 echo.
 
-:: Ensure PlayerDebugMode is enabled
+:: Check for old installation in system/admin AE folder
+if exist "%OLD_ADMIN_DIR%" (
+    echo [!] Old OpenFishTools installation found in admin folder:
+    echo     %OLD_ADMIN_DIR%
+    choice /C YN /M "Delete old installation from admin folder (will request Admin permission)?"
+    if not errorlevel 2 (
+        powershell -NoProfile -Command "Start-Process cmd -Verb RunAs -Wait -WindowStyle Hidden -ArgumentList '/c rmdir /s /q ""%OLD_ADMIN_DIR%""'" >nul 2>&1
+    )
+    echo.
+)
+
+:: Ensure PlayerDebugMode is enabled (HKCU - no admin required)
 for %%i in (7 8 9 10 11 12 13 14 15 16) do (
     reg add "HKCU\Software\Adobe\CSXS.%%i" /v "PlayerDebugMode" /t REG_SZ /d "1" /f >nul 2>&1
-    reg add "HKLM\Software\Adobe\CSXS.%%i" /v "PlayerDebugMode" /t REG_SZ /d "1" /f >nul 2>&1
     reg add "HKCU\Software\Wow6432Node\Adobe\CSXS.%%i" /v "PlayerDebugMode" /t REG_SZ /d "1" /f >nul 2>&1
-    reg add "HKLM\Software\Wow6432Node\Adobe\CSXS.%%i" /v "PlayerDebugMode" /t REG_SZ /d "1" /f >nul 2>&1
+)
+
+if not exist "%APPDATA%\Adobe\CEP\extensions" (
+    mkdir "%APPDATA%\Adobe\CEP\extensions" 2>nul
 )
 
 :: Sync directories using robocopy (Multi-threaded & ultra-fast)

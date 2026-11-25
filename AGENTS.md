@@ -41,10 +41,9 @@ Floor: code, commands, paths, numbers and error strings verbatim; never drop not
 ## 2. ExtendScript & Host Safety Rules
 - **Non-blocking Execution**: ExtendScript helper functions in `host/` must catch exceptions internally and fail gracefully without crashing or freezing the After Effects UI thread.
 - **Timeline Boundary Guards**: Apply `inPoint` / `outPoint` timeline boundary guards on all dynamic expression generators.
-- **Machine-Wide Target Directory**: Extension installations must strictly target machine-wide CEP folders:
-  - Windows: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\OpenFishTools`
-  - macOS: `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools`
-  - Never install to user AppData.
+- **User-Level Target Directory (No Admin)**: Extension installations target per-user CEP folders by default, with an optional elevated prompt to clean up legacy system-wide installs if present:
+  - Windows: `%APPDATA%\Adobe\CEP\extensions\OpenFishTools` (legacy admin path checked on install: `C:\Program Files (x86)\Common Files\Adobe\CEP\extensions\OpenFishTools`)
+  - macOS: `~/Library/Application Support/Adobe/CEP/extensions/OpenFishTools` (legacy admin path checked on install: `/Library/Application Support/Adobe/CEP/extensions/OpenFishTools`)
 
 ## 3. Strict File Manipulation Tooling (NO SCRIPT-BASED EDITS)
 - **STRICTLY FORBIDDEN**: Using Python scripts, Node.js scripts, `sed`, `awk`, `echo >`, `cat << 'EOF'`, or shell redirection to edit or generate code files.

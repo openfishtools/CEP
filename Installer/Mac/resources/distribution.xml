@@ -3,7 +3,7 @@
 
     <title>OpenFishTools</title>
     <organization>com.cutefish</organization>
-    <domains enable_localSystem="true" enable_currentUserHome="false" />
+    <domains enable_anywhere="false" enable_currentUserHome="true" enable_localSystem="false" />
     <options customize="always" require-scripts="true" rootVolumeOnly="true" />
 
     <welcome    file="welcome.txt"    mime-type="text/plain" />
