@@ -49,7 +49,7 @@
 ## Instalasi
 
 ### Metode 1: Installer Otomatis (Disarankan)
-Unduh rilis terbaru dari halaman [GitHub Releases](https://github.com/cutefishaep/OpenFishTools/releases):
+Unduh rilis terbaru dari halaman [GitHub Releases](https://github.com/openfishtools/CEP/releases):
 - **macOS**: Jalankan `OpenFishTools.pkg` dan ikuti wizard instalasi.
 - **Windows**: Jalankan `OpenFishTools_Setup.exe` dan selesaikan instalasi.
 
@@ -159,7 +159,7 @@ OpenFishTools adalah ekstensi independen. Adobe dan After Effects adalah merek d
 ## Installation
 
 ### Method 1: Automated Installer (Recommended)
-Download the latest release from the [GitHub Releases](https://github.com/cutefishaep/OpenFishTools/releases) page:
+Download the latest release from the [GitHub Releases](https://github.com/openfishtools/CEP/releases) page:
 - **macOS**: Run `OpenFishTools.pkg` and follow the setup wizard.
 - **Windows**: Run `OpenFishTools_Setup.exe` and complete installation.
 

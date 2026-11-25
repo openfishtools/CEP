@@ -3,7 +3,7 @@
   #define MyAppVersion  "1.3.10"
 #endif
 #define MyAppPublisher  "cutefishaep"
-#define MyAppURL        "https://github.com/cutefishaep/OpenFishTools"
+#define MyAppURL        "https://github.com/openfishtools/CEP"
 #define MyBundleID      "com.cutefish.tools"
 #define MySourceRoot    "..\.."
 

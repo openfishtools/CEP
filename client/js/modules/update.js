@@ -2,8 +2,10 @@
 
 
 var UpdateModule = (function () {
-    var GITHUB_API = "https://api.github.com/repos/cutefishaep/OpenFishTools/releases/latest";
-    var GITHUB_URL = "https://cutefish.my.id/#fishtoolupdate";
+    var GITHUB_API = "https://api.github.com/repos/openfishtools/CEP/releases?per_page=10";
+    var PACKAGE_JSON_URL = "https://raw.githubusercontent.com/openfishtools/CEP/main/package.json";
+    var CHANGELOG_URL = "https://raw.githubusercontent.com/openfishtools/CEP/main/changelog.md";
+    var GITHUB_URL = "https://github.com/openfishtools/CEP/releases";
 
     function init() {
         var btn = document.getElementById('btn-check-update');
@@ -31,11 +33,11 @@ var UpdateModule = (function () {
             if (majorVersion && majorVersion <= 14) {
                 if (!silent && window.ModalModule) {
                     window.ModalModule.confirm(
-                        "After Effects CC 2017 cannot use the internal update checker due to technical limitations. \n\nWould you like to visit cutefish.my.id manually to check for the latest version?",
+                        "After Effects CC 2017 cannot use the internal update checker due to technical limitations. \n\nWould you like to visit GitHub Releases manually to check for the latest version?",
                         "Manual Check Required",
                         function (confirmed) {
                             if (confirmed) {
-                                window.csInterface.openURLInDefaultBrowser("https://cutefish.my.id/#fishtoolupdate");
+                                window.csInterface.openURLInDefaultBrowser(GITHUB_URL);
                             }
                         }
                     );
@@ -58,6 +60,65 @@ var UpdateModule = (function () {
         }
     }
 
+    function extractChangelogSection(md, version) {
+        if (!md || !version) return "";
+        var escaped = version.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        var re = new RegExp('(^##\\s*\\[?v?' + escaped + '\\]?[\\s\\S]*?)(?=\\n##\\s*\\[|\\s*$)', 'm');
+        var m = md.match(re);
+        return m ? m[1].trim() : "";
+    }
+
+    function fetchLatestReleaseInfo() {
+        return fetch(GITHUB_API)
+            .then(function (response) {
+                if (!response.ok) return null;
+                return response.json();
+            })
+            .then(function (releases) {
+                if (Array.isArray(releases)) {
+                    for (var i = 0; i < releases.length; i++) {
+                        var rel = releases[i];
+                        if (!rel || rel.draft || !rel.tag_name) continue;
+                        var cleanTag = rel.tag_name.replace(/^v/, '');
+                        if (/^\d+(?:\.\d+)+$/.test(cleanTag)) {
+                            return {
+                                version: cleanTag,
+                                body: rel.body || "",
+                                url: rel.html_url || GITHUB_URL
+                            };
+                        }
+                    }
+                }
+                return null;
+            })
+            .catch(function () {
+                return null;
+            })
+            .then(function (releaseInfo) {
+                if (releaseInfo) return releaseInfo;
+                return fetch(PACKAGE_JSON_URL)
+                    .then(function (response) {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(function (pkg) {
+                        if (!pkg || !pkg.version) throw new Error('Invalid version response');
+                        var cleanVer = String(pkg.version).replace(/^v/, '');
+                        if (!/^\d+(?:\.\d+)+$/.test(cleanVer)) throw new Error('Invalid version format');
+                        return fetch(CHANGELOG_URL)
+                            .then(function (res) { return res.ok ? res.text() : ""; })
+                            .catch(function () { return ""; })
+                            .then(function (md) {
+                                return {
+                                    version: cleanVer,
+                                    body: extractChangelogSection(md, cleanVer),
+                                    url: GITHUB_URL
+                                };
+                            });
+                    });
+            });
+    }
+
     function performFetchCheck(silent) {
         var btn = document.getElementById('btn-check-update');
         var latestVerEl = document.getElementById('update-latest-ver');
@@ -71,28 +132,23 @@ var UpdateModule = (function () {
             latestVerEl.textContent = "Checking...";
         }
 
-        fetch(GITHUB_API)
-            .then(function (response) {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(function (data) {
-                if (!data || !data.tag_name) throw new Error('Invalid API response');
-
-                var latestVersion = data.tag_name.replace(/^v/, '');
+        fetchLatestReleaseInfo()
+            .then(function (info) {
+                var latestVersion = info.version;
+                var releaseUrl = info.url || GITHUB_URL;
                 var currentVersion = (window.EXTENSION_VERSION || "0.0.8").replace(/^v/, '');
 
                 if (latestVerEl) latestVerEl.textContent = "v" + latestVersion;
 
                 if (isNewer(latestVersion, currentVersion)) {
                     if (window.ModalModule) {
-                        var bodyHtml = formatReleaseNotes(data.body || ("A new version (v" + latestVersion + ") is available!"));
+                        var bodyHtml = formatReleaseNotes(info.body || ("A new version (v" + latestVersion + ") is available!"));
                         window.ModalModule.confirm(
                             bodyHtml,
                             "Update Available",
                             function (confirmed) {
                                 if (confirmed) {
-                                    window.csInterface.openURLInDefaultBrowser(GITHUB_URL);
+                                    window.csInterface.openURLInDefaultBrowser(releaseUrl);
                                 }
                             },
                             {
