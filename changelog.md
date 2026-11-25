@@ -2,9 +2,10 @@
 
 All notable changes to the **Fish Tools** Adobe After Effects extension will be documented in this file.
 
-## [1.3.10] - 2026-10-11
+## [1.3.10] - 2026-11-25
 ### Changed
-- **License**: FishTools is now licensed under **CC BY-NC-SA 4.0** instead of MIT. You may use, modify and share it for noncommercial purposes with credit; selling it and removing the credit are not allowed, and modified versions must use the same license. Versions up to 1.3.9 stay under MIT. See `LICENSE` and the README.
+- **License**: FishTools is now licensed under **GNU AGPLv3 (AGPL-3.0)** instead of MIT (matching `LICENSE` and `README.md`). Versions up to 1.3.9 stay under MIT.
+- **Branding & Update Checker**: Updated extension logo, `SetupIcon.ico`, and in-panel update checker (`client/js/modules/update.js`) to track `openfishtools/CEP`.
 
 ## [1.3.9] - 2026-08-28
 ### Added

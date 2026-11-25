@@ -36,11 +36,17 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+ ]]; then
-            VERSION="1.3.2"
+            VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -n 1)
+            VERSION="${VERSION#v}"
+          fi
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG="$GITHUB_REF_NAME"
+          else
+            TAG="v${VERSION}"
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "TAG=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
-          echo "Building version: $VERSION (tag: $GITHUB_REF_NAME)"
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Building version: $VERSION (tag: $TAG)"
 
       - name: Inject version into manifest and installer files
         run: |
@@ -93,7 +99,8 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+ ]]; then
-            VERSION="1.3.2"
+            VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -n 1)
+            VERSION="${VERSION#v}"
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Building version: $VERSION"
@@ -152,7 +159,8 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+ ]]; then
-            VERSION="1.3.2"
+            VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -n 1)
+            VERSION="${VERSION#v}"
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Building version: $VERSION"
@@ -210,8 +218,17 @@ jobs:
         id: version
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+ ]]; then
+            VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -n 1)
+            VERSION="${VERSION#v}"
+          fi
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            TAG="$GITHUB_REF_NAME"
+          else
+            TAG="v${VERSION}"
+          fi
           echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "TAG=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Generate release notes from changelog
         id: changelog
