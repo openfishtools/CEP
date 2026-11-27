@@ -2,7 +2,7 @@
 
   <img src="https://raw.githubusercontent.com/openfishtools/.github/main/profile/assets/projects/cep.svg" width="96" height="96" alt="FishTools" />
 
-  # FishTools
+  # FishTools CEP
 
   **After Effects extension panel for motion design, easing curves, and project utilities.**
 
